@@ -1,8 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:location/location.dart';
+import 'package:favorite_places/models/place.dart';
+import 'package:flutter_map/flutter_map.dart';
+import 'package:latlong2/latlong.dart';
+import 'package:geocoding/geocoding.dart' as geo;
 
 class LocationInput extends StatefulWidget {
-  const LocationInput({super.key});
+  const LocationInput({super.key, required this.onSelectLocation});
+
+  final void Function(PlaceLocation location) onSelectLocation;
 
   @override
   State<LocationInput> createState() => _LocationInputState();
@@ -10,7 +16,7 @@ class LocationInput extends StatefulWidget {
 
 class _LocationInputState extends State<LocationInput> {
 
-  Location? _pickedLocation;
+  PlaceLocation? _pickedLocation;
   var _isGettingLocation = false;
 
   void _getCurrentLocation() async{
@@ -42,11 +48,29 @@ class _LocationInputState extends State<LocationInput> {
     });
 
     locationData = await location.getLocation();
-    print("La latitude est de ${locationData.latitude} et la longitude est de ${locationData.longitude} ");
+    final lat = locationData.latitude;
+    final long = locationData.longitude;
+
+    // Geocoding for getting the address
+    List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(lat!, long!);
+    final String adresse = '${placemarks[0].street}, ${placemarks[0].locality}, ${placemarks[0].country}.';
+    
+    print("@@@@@@@@@@@@@@La latitude est de ${locationData.latitude} et la longitude est de ${locationData.longitude} \n Concernant l'addresse $adresse````````````\n");
+
+    if (lat == null || long == null) {
+      return;
+    }
 
     setState(() {
-      _isGettingLocation = true;
+      _pickedLocation = PlaceLocation(
+        latitude: lat, 
+        longitude: long, 
+        address: adresse
+      );
+      _isGettingLocation = false;
     });
+
+    widget.onSelectLocation(_pickedLocation!);
     
   }
 
@@ -60,6 +84,29 @@ class _LocationInputState extends State<LocationInput> {
         color: Theme.of(context).colorScheme.onBackground
       ),
     );
+
+    if (_pickedLocation != null) {
+      previewcontent = FlutterMap(
+        options: MapOptions(
+          initialCenter: LatLng(_pickedLocation!.latitude, _pickedLocation!.longitude),
+        ),
+        children: [
+          TileLayer(
+            urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+            userAgentPackageName: 'com.example.app',
+          ),
+          MarkerLayer(
+              markers: [
+                Marker(
+                  point: LatLng(_pickedLocation!.latitude, _pickedLocation!.longitude),
+                  child: const Icon(Icons.person_pin,color: Colors.red,)
+                ),
+              ]
+            )
+        ]
+      );
+      
+    }
 
     if (_isGettingLocation) {
       previewcontent = const CircularProgressIndicator();
