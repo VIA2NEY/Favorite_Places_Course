@@ -24,3 +24,8 @@ e: C:\Users\HP\AppData\Local\Pub\Cache\hosted\pub.dev\location-6.0.2\android\src
    ![](/readme_img/Capture_d_ecran_2024-07-10_etape_1.png)
 
 2. ![https://stackoverflow.com/questions/78080244/flutter-version-3-19-2-requires-a-newer-version-of-the-kotlin-gradle-plugin-an/78080295#78080295](readme_img\Capture_d_ecran_2024-07-10_etape_1.png)
+
+
+- Geocoding reverse Tips
+
+https://fernandoptr.medium.com/how-to-get-users-current-location-address-in-flutter-geolocator-geocoding-be563ad6f66a
