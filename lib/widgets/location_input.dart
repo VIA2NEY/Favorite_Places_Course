@@ -23,7 +23,7 @@ class _LocationInputState extends State<LocationInput> {
   void _savePlace(double latitude, double longitude) async{
     
     // Geocoding for getting the address
-    List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(latitude, latitude);
+    List<geo.Placemark> placemarks = await geo.placemarkFromCoordinates(latitude, longitude);
     final String adresse = '${placemarks[0].street}, ${placemarks[0].locality}, ${placemarks[0].country}.';
 
     setState(() {

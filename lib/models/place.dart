@@ -20,8 +20,10 @@ class Place {
   Place({
     required this.title, 
     required this.image,
-    required this.location
-  }) : id = uuid.v4();
+    required this.location,
+    String? id
+  }) : id = id ?? uuid.v4(); // Retourne le id qu'on peut attribuer une valeur (id qui est dans la classe) ou si il est null genere une valeur
+
 
   final String id;
   final String title;
